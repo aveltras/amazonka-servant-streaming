@@ -10,6 +10,7 @@ executable example
                , amazonka
                , amazonka-s3
                , conduit
+               , conduit-extra
                , dotenv
                , lens
                , resourcet

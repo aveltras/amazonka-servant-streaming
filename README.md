@@ -21,7 +21,13 @@ To run the server, simply use
 nix-shell --run 'ghcid -T :main'
 ```
 
-Currently, the streaming doesn't work and the following error is encountered during the endpoint access:
+The server provides two endpoints.
+
+One accessible at http://localhost:3030/two-steps which first downloads the file from s3 and then streams it to the client.
+This works but is suboptimal as we need an intermediary file so the client can't start downloading before the server finishes fetching from s3.
+
+Another one accessible at http://localhost:3030/one-step which tries to achieve the desired result (no intermediary file) but is currently failing.
+The streaming doesn't work and the following error is encountered when accessing the endpoint:
 
 ```
 HttpExceptionRequest Request {
@@ -40,3 +46,9 @@ HttpExceptionRequest Request {
 }
  ConnectionClosed
  ```
+
+## Related information
+
+- https://github.com/domenkozar/servant-streaming-amazonka (seems outdated)
+- https://github.com/haskell-servant/servant/blob/master/servant-conduit/example/Main.hs
+- https://github.com/brendanhay/amazonka/blob/main/examples/src/S3.hs
