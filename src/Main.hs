@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 
 module Main where
@@ -19,9 +20,7 @@ import Servant.Conduit ()
 import Configuration.Dotenv
 
 main :: IO ()
-main = do
-  void $ loadFile defaultConfig
-  run 3030 app
+main = loadFile defaultConfig >> run 3030 app
 
 app :: Application
 app = serve (Proxy @API) server
@@ -36,13 +35,10 @@ handler = do
   awsEnv <- newEnv Discover
   liftIO $
     runResourceT $ do
-      res <- send awsEnv getObjectRequest
-      let streamBody = _streamBody $ res ^. getObjectResponse_body
+      res <- send awsEnv $ newGetObject (BucketName "amazonka-servant-streaming") (ObjectKey "haskell.png")
+      let streamBody :: ConduitM () ByteString (ResourceT IO) () = _streamBody $ res ^. getObjectResponse_body
       -- uncommenting this correctly downloads the file locally
       -- liftIO $ runConduitRes $ streamBody .| sinkFile "downloaded_haskell.png"
       pure streamBody
-
-getObjectRequest :: GetObject
-getObjectRequest = newGetObject (BucketName "amazonka-servant-streaming") (ObjectKey "haskell.png")
 
 

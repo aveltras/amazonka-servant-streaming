@@ -1,6 +1,6 @@
 # amazonka-servant-streaming
 
-Minimal repo trying to achieve file streaming from AWS S3 through Servant.
+Minimal repo trying to achieve file streaming from AWS S3 through Servant using Amazonka library.
 
 To use this, you have to create a `.env` file at the root of the project with the following values filling `AWS_ACCESS_KEY_ID` AND `AWS_SECRET_ACCESS_KEY` appropriately:
 
@@ -13,7 +13,10 @@ AWS_DEFAULT_REGION=eu-west-3
 
 This repository comes with an existing bucket `amazonka-servant-streaming` with a file named `haskell.png` to test the streaming.
 
+The test file is available here: https://amazonka-servant-streaming.s3.eu-west-3.amazonaws.com/haskell.png
+
 To run the server, simply use
+
 ```sh
 nix-shell --run 'ghcid -T :main'
 ```
