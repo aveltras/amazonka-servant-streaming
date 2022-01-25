@@ -52,3 +52,5 @@ HttpExceptionRequest Request {
 - https://github.com/domenkozar/servant-streaming-amazonka (seems outdated)
 - https://github.com/haskell-servant/servant/blob/master/servant-conduit/example/Main.hs
 - https://github.com/brendanhay/amazonka/blob/main/examples/src/S3.hs
+- https://github.com/brendanhay/amazonka/issues/466
+- https://github.com/brendanhay/amazonka/issues/463
