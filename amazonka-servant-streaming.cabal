@@ -1,0 +1,20 @@
+cabal-version: 2.2
+name: amazonka-servant-streaming
+version: 0.1.0
+build-type: Simple
+
+executable example
+  main-is: Main.hs
+  hs-source-dirs: src
+  build-depends: base
+               , amazonka
+               , amazonka-s3
+               , conduit
+               , dotenv
+               , lens
+               , resourcet
+               , servant
+               , servant-conduit
+               , servant-server
+               , wai
+               , warp
