@@ -1,4 +1,4 @@
-# amazonka-servant-streaming
+# amazonka-servant-streaming (works now)
 
 Minimal repo trying to achieve file streaming from AWS S3 through Servant using Amazonka library.
 
