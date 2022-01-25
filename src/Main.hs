@@ -43,11 +43,18 @@ getObjectRequest = newGetObject (BucketName "amazonka-servant-streaming") (Objec
 oneStepHandler :: Handler (ConduitT () ByteString (ResourceT IO) ())
 oneStepHandler = do
   awsEnv <- newEnv Discover
-  liftIO $
-    runResourceT $ do
-      res <- send awsEnv getObjectRequest
-      let streamBody :: ConduitM () ByteString (ResourceT IO) () = _streamBody $ res ^. getObjectResponse_body
-      pure streamBody
+  resourceState <- createInternalState
+  res <- flip runInternalState resourceState $ do
+    awsRes <- send awsEnv getObjectRequest
+    pure . _streamBody $ awsRes ^. getObjectResponse_body
+
+  -- It took me a long time to understand what this was doing.
+  -- Because ConduitT is a monad transformer and we have
+  -- closeInternalState :: MonadIO m => InternalState -> m ()
+  -- this attaches the `closeInternalState resourceState` action to the
+  -- end of the conduit, just before it returns its final value
+  -- (which was () anyway).
+  pure $ res *> closeInternalState resourceState
 
 -- first downloading then sending the file
 twoStepsHandler :: Handler (Headers '[ Header "Content-Disposition" Text] (SourceIO ByteString))
@@ -58,5 +65,3 @@ twoStepsHandler = do
       res <- send awsEnv getObjectRequest
       void $ (res ^. getObjectResponse_body) `sinkBody` CB.sinkFile "haskell.png"
   pure $ addHeader "attachment; filename=\"haskell.png\"" $ S.readFile "haskell.png"
-
-
